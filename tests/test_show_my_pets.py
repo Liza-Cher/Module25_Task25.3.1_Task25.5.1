@@ -1,24 +1,13 @@
 import pytest
 from settings import valid_email, valid_password
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-@pytest.fixture(autouse=True)
-def testing():
-   pytest.driver = webdriver.Chrome('C:\webdriver_chrome\chromedriver.exe')
+def test_show_my_pets():
+   '''Проверяем что мы оказались на странице "Мои питомцы"'''
 
-   # Переходим на страницу авторизации
-   pytest.driver.get('https://petfriends.skillfactory.ru/login')
-
-   yield
-
-   pytest.driver.quit()
-
-@pytest.fixture()
-def go_to_my_pets():
-
+   # Устанавливаем явное ожидание
    element = WebDriverWait(pytest.driver, 10).until(EC.presence_of_element_located((By.ID, "email")))
    # Вводим email
    pytest.driver.find_element_by_id('email').send_keys(valid_email)
@@ -34,3 +23,7 @@ def go_to_my_pets():
    element = WebDriverWait(pytest.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Мои питомцы")))
    # Нажимаем на ссылку "Мои питомцы"
    pytest.driver.find_element_by_link_text("Мои питомцы").click()
+
+
+   # Проверяем что мы оказались на странице "Мои питомцы"
+   assert pytest.driver.current_url == 'https://petfriends.skillfactory.ru/my_pets'
